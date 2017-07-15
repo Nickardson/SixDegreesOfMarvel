@@ -4,8 +4,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixDegreesOfMarvel", "SixDegreesOfMarvel\SixDegreesOfMarvel.csproj", "{D10A2716-FDB1-4D05-831C-35B2260C86D6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{547C171E-C31B-4087-946F-827CE7A5BE88} = {547C171E-C31B-4087-946F-827CE7A5BE88}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixDegreesOfMarvel.Tests", "SixDegreesOfMarvel.Tests\SixDegreesOfMarvel.Tests.csproj", "{B0A10175-455D-4BF2-85FA-966E4E29BF82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarvelApi", "MarvelApi\MarvelApi.csproj", "{547C171E-C31B-4087-946F-827CE7A5BE88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +26,10 @@ Global
 		{B0A10175-455D-4BF2-85FA-966E4E29BF82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0A10175-455D-4BF2-85FA-966E4E29BF82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0A10175-455D-4BF2-85FA-966E4E29BF82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{547C171E-C31B-4087-946F-827CE7A5BE88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{547C171E-C31B-4087-946F-827CE7A5BE88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{547C171E-C31B-4087-946F-827CE7A5BE88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{547C171E-C31B-4087-946F-827CE7A5BE88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
