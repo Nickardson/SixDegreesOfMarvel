@@ -44,14 +44,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\ParsedPageModel.cs" />
+    <Compile Include="Tasks\Models\CategoryMembers\CategoryMembersModel.cs" />
+    <Compile Include="Tasks\Models\CategoryMembers\QueryCategoryMembersContinueItemModel.cs" />
+    <Compile Include="Tasks\Models\CategoryMembers\QueryCategoryMembersModel.cs" />
+    <Compile Include="Tasks\Models\CategoryMembers\QueryCategoryMembersQueryContinueModel.cs" />
+    <Compile Include="Tasks\Models\CategoryMembers\QueryCategoryMembersQueryModel.cs" />
+    <Compile Include="Tasks\Models\ParsePage\ParseCategoryModel.cs" />
+    <Compile Include="Tasks\Models\ParsePage\ParseLinkModel.cs" />
+    <Compile Include="Tasks\Models\ParsePage\ParsePageModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\Interfaces\IMarvelApiTasks.cs" />
     <Compile Include="Tasks\MarvelApiTasks.cs" />
+    <Compile Include="Tasks\Models\ParsePage\ParseModel.cs" />
+    <Compile Include="Tasks\Models\ParsePage\ParseTextModel.cs" />
+    <Compile Include="Tasks\Models\ParsePage\ParseTemplateModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

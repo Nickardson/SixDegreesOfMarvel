@@ -11,7 +11,7 @@ using SixDegreesOfMarvel.Controllers;
 namespace SixDegreesOfMarvel.Tests.Controllers
 {
     [TestClass]
-    public class ValuesControllerTest
+    public class MarvelControllerTest
     {
         [TestMethod]
         public void Get()
