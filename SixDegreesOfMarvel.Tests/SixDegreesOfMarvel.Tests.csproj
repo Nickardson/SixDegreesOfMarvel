@@ -102,10 +102,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SixDegreesOfMarvel\SixDegreesOfMarvel.csproj">
+    <ProjectReference Include="..\SixDegreesOfMarvel\SixDegreesOfMarvel.Web.csproj">
       <Project>{D10A2716-FDB1-4D05-831C-35B2260C86D6}</Project>
-      <Name>SixDegreesOfMarvel</Name>
+      <Name>SixDegreesOfMarvel.Web</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tasks\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
