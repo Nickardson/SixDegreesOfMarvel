@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTO\CharacterDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\MarvelDependencyTasks.cs" />
   </ItemGroup>
@@ -62,6 +63,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MarvelApi\MarvelApi.csproj">
+      <Project>{547c171e-c31b-4087-946f-827ce7a5be88}</Project>
+      <Name>MarvelApi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SixDegreesOfMarvel.Model\SixDegreesOfMarvel.Model.csproj">
       <Project>{A260C221-0677-4356-ABBB-E3B4B1ACD0E8}</Project>
       <Name>SixDegreesOfMarvel.Model</Name>

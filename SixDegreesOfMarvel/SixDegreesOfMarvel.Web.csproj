@@ -276,10 +276,7 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -319,9 +316,17 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CharacterGroupsResponse.cs" />
+    <Compile Include="Models\CharacterModel.cs" />
+    <Compile Include="Models\GroupCharactersResponse.cs" />
+    <Compile Include="Models\GroupModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\SixDegreesOfMarvel.mdf" />
+    <Content Include="App_Data\SixDegreesOfMarvel_log.ldf">
+      <DependentUpon>SixDegreesOfMarvel.mdf</DependentUpon>
+    </Content>
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -398,6 +403,10 @@
     <ProjectReference Include="..\SixDegreesOfMarvel.Model\SixDegreesOfMarvel.Model.csproj">
       <Project>{a260c221-0677-4356-abbb-e3b4b1acd0e8}</Project>
       <Name>SixDegreesOfMarvel.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SixDegreesOfMarvel.Repository\SixDegreesOfMarvel.Repository.csproj">
+      <Project>{C58BE788-8E4A-4ECF-A67A-A096A83A0461}</Project>
+      <Name>SixDegreesOfMarvel.Repository</Name>
     </ProjectReference>
     <ProjectReference Include="..\SixDegreesOfMarvel.Tasks\SixDegreesOfMarvel.Tasks.csproj">
       <Project>{5B697641-226B-4F96-9E38-9C4A33998BAF}</Project>

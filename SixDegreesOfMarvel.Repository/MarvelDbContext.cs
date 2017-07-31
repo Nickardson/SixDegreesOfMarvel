@@ -16,5 +16,6 @@ namespace SixDegreesOfMarvel.Repository
 
         public DbSet<Character> Characters { get; set; }
         public DbSet<Group> Groups { get; set; }
+        public DbSet<CharacterGroup> CharacterGroups { get; set; }
     }
 }

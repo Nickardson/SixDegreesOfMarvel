@@ -65,16 +65,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MarvelDbContext.cs" />
+    <Compile Include="MarvelDbInitializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="SixDegreesOfMarvel.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SixDegreesOfMarvel_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>SixDegreesOfMarvel.mdf</DependentUpon>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

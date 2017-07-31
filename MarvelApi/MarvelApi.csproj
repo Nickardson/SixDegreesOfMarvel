@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tasks\MarvelHostException.cs" />
     <Compile Include="Tasks\Models\CategoryMembers\CategoryMembersModel.cs" />
     <Compile Include="Tasks\Models\CategoryMembers\QueryCategoryMembersContinueItemModel.cs" />
     <Compile Include="Tasks\Models\CategoryMembers\QueryCategoryMembersModel.cs" />

@@ -1,6 +1,7 @@
 using MarvelApi.Tasks;
 using Microsoft.Practices.Unity;
 using System.Web.Http;
+using SixDegreesOfMarvel.Tasks.Tasks;
 using Unity.WebApi;
 
 namespace SixDegreesOfMarvel
@@ -12,7 +13,8 @@ namespace SixDegreesOfMarvel
 			var container = new UnityContainer();
             
             container.RegisterType<MarvelApiTasks, MarvelApiTasks>();
-            
+            container.RegisterType<MarvelDependencyTasks, MarvelDependencyTasks>();
+
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
         }
     }
