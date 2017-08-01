@@ -14,7 +14,7 @@ namespace SixDegreesOfMarvel.Tasks.Tasks
     public class MarvelDependencyTasks
     {
         private readonly MarvelDbContext _marvelDbContext = new MarvelDbContext();
-        private MarvelApiTasks _marvelApiTasks;
+        private readonly MarvelApiTasks _marvelApiTasks;
 
         public MarvelDependencyTasks(MarvelApiTasks marvelApiTasks)
         {

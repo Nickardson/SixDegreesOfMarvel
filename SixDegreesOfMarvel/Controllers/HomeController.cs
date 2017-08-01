@@ -14,5 +14,10 @@ namespace SixDegreesOfMarvel.Controllers
 
             return View();
         }
+
+        public ActionResult ChainFinder()
+        {
+            return View();
+        }
     }
 }
