@@ -1,16 +1,18 @@
-﻿function getGroupsOfCharacter(characterName, callback) {
+﻿function getGroupsOfCharacter(characterName, callback, failed) {
     $.ajax({
         url: '/api/marvel/character/groups/?characterName=' + characterName,
         method: 'GET',
-        success: callback
+        success: callback,
+        error: failed
     });
 }
 
-function getCharactersInGroup(groupName, callback) {
+function getCharactersInGroup(groupName, callback, failed) {
     $.ajax({
         url: '/api/marvel/group/characters/?groupName=' + groupName,
         method: 'GET',
-        success: callback
+        success: callback,
+        error: failed
     });
 }
 
@@ -43,30 +45,78 @@ function pushGroupsRow(groups) {
 var ChainTypeCharacter = 'Character';
 var ChainTypeGroup = 'Group';
 
-function Chain(type, names, selectedName) {
+function Chain(type, items, selectedName) {
+    this.timeRetrieved = Date.now();
     this.type = type;
-    this.names = names;
+    this.items = items;
     this.selectedName = selectedName;
 }
 
 var app = new Vue({
     el: '#app',
     data: {
+        loadingChain: false,
         chains: []
     },
     methods: {
         /**
          * 
          * @param {} type 'Character' or 'Group'
-         * @param {} name name of the page i.e. 'Captain America (Steve Rogers)'
+         * @param {} item
          * @returns {} 
          */
-        exploreChain: function (type, name) {
-            if (type === ChainTypeCharacter) {
-                getGroupsOfCharacter(name,
+        exploreChain: function (chain, item) {
+            var self = this;
+
+
+            console.log('Explore chain ', chain, ', item:', item);
+            if (chain.type === ChainTypeCharacter) {
+                self.loadingChain = true;
+
+                getGroupsOfCharacter(item.name,
+                    function(data) {
+                        // remove all chains above this one
+                        self.chains = self.chains.splice(self.chains.indexOf(chain));
+
+                        var chainItems = data.Groups.map(function (group) {
+                            return {
+                                name: group,
+                                // TODO: group should be fleshed out with explored info, etc
+                                explored: false
+                            }
+                        });
+
+                        var groupChain = new Chain(ChainTypeGroup, chainItems);
+                        self.chains.unshift(groupChain);
+
+                        self.loadingChain = false;
+                    },
+                    function(xhr, textStatus) {
+                        self.loadingChain = false;
+                    });
+            } else if (chain.type === ChainTypeGroup) {
+                self.loadingChain = true;
+
+                getCharactersInGroup(item.name,
                     function (data) {
-                        console.log(data);
-                        //pushGroupsRow(data.Groups);
+                        // remove all chains above this one
+                        self.chains = self.chains.splice(self.chains.indexOf(chain));
+
+                        var chainItems = data.Characters.map(function (character) {
+                            return {
+                                name: character,
+                                // TODO: group should be fleshed out with explored info, etc
+                                explored: false
+                            }
+                        });
+
+                        var groupChain = new Chain(ChainTypeCharacter, chainItems);
+                        self.chains.unshift(groupChain);
+
+                        self.loadingChain = false;
+                    },
+                    function (xhr, textStatus) {
+                        self.loadingChain = false;
                     });
             }
         }
@@ -74,12 +124,16 @@ var app = new Vue({
 });
 
 app.chains.push(new Chain(ChainTypeGroup, [
-    'Force Works'
+    { name: 'Force Works' }
 ], 'Force Works'));
 app.chains.push(new Chain(ChainTypeCharacter, [
-    'Captain America (Steve Rogers)',
-    'Iron Man (Anthony Stark)'
+    { name: 'Captain America (Steve Rogers)', explored: true },
+    { name: 'Iron Man (Anthony Stark)' }
 ], 'Iron Man (Anthony Stark)'));
 app.chains.push(new Chain(ChainTypeGroup, [
-    'Avengers'
+    { name: 'Avengers' }
 ], 'Avengers'));
+app.chains.push(new Chain(ChainTypeCharacter, [
+    { name: 'Iron Man (Anthony Stark)' },
+    { name: 'Captain America (Steve Rogers)', explored: true },
+], 'Iron Man (Anthony Stark)'));

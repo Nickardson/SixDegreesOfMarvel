@@ -89,7 +89,7 @@ namespace MarvelApi.Tasks
 
         private static IEnumerable<string> GetCharacterAffiliationLinksFromGroupPageContents(HtmlDocument document)
         {
-            return EnumerateLinks(document, "//*[@id = 'currentmembers']//a[not(contains(@class, 'new'))]");
+            return EnumerateLinks(document, "//*[@id='currentmembers' or @id='team-formermembers' or @id='team-othermembers']//a[not(contains(@class, 'new'))]");
         }
 
         private static IEnumerable<string> EnumerateLinks(HtmlDocument document, string xpath)
