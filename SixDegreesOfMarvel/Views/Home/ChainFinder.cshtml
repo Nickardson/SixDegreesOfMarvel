@@ -2,25 +2,73 @@
     <div class="jumbotron">
         <h1>Chain Finder</h1>
     </div>
+    
+    <div>
 
-    <div id="chainContainer" style="position: relative;" mode="out-in">
-        <transition-group name="list" tag="div">
-            <div v-for="chain in chains" v-bind:key="chain.timeRetrieved" class="row chain">
-                <div class="col-xs-2 col-sm-1 chain-item-subtitle">{{chain.type}}</div>
-                <div class="col-xs-10 col-sm-11">
-                    <div class="row">
-                        <div class="col-xs-4 chain-item" v-for="item in chain.items">
-                            <button class="btn"
-                                    v-on:click="exploreChain(chain, item)"
-                                    v-bind:class="{ 'chain-item-selected-item': item.name === chain.selectedName, 'btn-primary': item.explored, 'btn-default': !item.explored }"
-                                    v-bind:disabled="loadingChain">
-                                {{decodeURIComponent(item.name)}}
-                            </button>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#explore" aria-controls="home" role="tab" data-toggle="tab">Explore</a></li>
+            <li role="presentation"><a v-on:click="updateCharacterList()" href="#connections" aria-controls="profile" role="tab" data-toggle="tab">Connections</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="explore">
+                <div v-if="loadingChain" class="text-info">Loading...</div>
+                <transition-group name="list" tag="div">
+                    <div v-for="chain in chains" v-bind:key="chain.timeRetrieved" class="row chain">
+                        <div class="col-xs-2 col-sm-1 chain-item-subtitle">{{chain.type}}</div>
+                        <div class="col-xs-10 col-sm-11">
+                            <h4 v-if="chain.items.length == 0">No connections found.</h4>
+                            <div class="row" v-if="chain.items.length > 0">
+                                <div class="col-xs-4 chain-item" v-for="item in chain.items">
+                                    <button class="btn"
+                                            v-on:click="exploreChain(chain, item)"
+                                            v-bind:class="{ 'chain-item-selected-item': item.name === chain.selectedName, 'btn-primary': item.explored, 'btn-default': !item.explored }"
+                                            v-bind:disabled="loadingChain">
+                                        {{item.name}}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </transition-group>
             </div>
-        </transition-group>
+
+            <div role="tabpanel" class="tab-pane" id="connections">
+                <label>
+                    From:
+                    <select v-model="fromCharacter" class="form-control">
+                        <option v-for="character in exploredCharacters" v-bind:value="character.name">{{character.name}}</option>
+                    </select>
+                </label>
+                <label>
+                    To:
+                    <select v-model="toCharacter" class="form-control">
+                        <option v-for="character in exploredCharacters" v-bind:value="character.name">{{character.name}}</option>
+                    </select>
+                </label>
+                <button v-on:click="determineConnections(fromCharacter, toCharacter)" class="btn btn-primary">Calculate Degrees of Separation</button>
+                
+                <div v-if="connections.length > 0" class="row">
+                    <div class="col-xs-1 connection-count">{{connections.length - 1}}&deg;</div>
+                    <div class="col-xs-11">
+                        <ul class="list-unstyled">
+                            <li v-for="(connection, index) in connections">
+                                <span v-if="index == 1">Knows</span>
+                                <span v-if="index > 1">Who knows</span>
+                                <b>{{connection.Character.Name}}</b>
+                                <span v-if="connection.KnownFromGroup">from <b>{{connection.KnownFromGroup.Name}}</b></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <h3 v-if="connections.length == 0">
+                    No connection found. Try a new search!
+                </h3>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -28,6 +76,14 @@
 
 @section scripts {
     <style>
+        .connection-count {
+            font-size: 40px;
+            color: #333;
+        }
+         .tab-pane {
+             padding: 10px;
+         }
+
         .chain {
             border-bottom: 1px dashed lightgray;
             margin-bottom: 1em;

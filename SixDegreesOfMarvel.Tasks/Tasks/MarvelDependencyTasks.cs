@@ -29,6 +29,11 @@ namespace SixDegreesOfMarvel.Tasks.Tasks
 
             await _marvelDbContext.SaveChangesAsync();
 
+            // re-seed the values
+            new MarvelDbInitializer().CreateMarvelChacacters(_marvelDbContext);
+
+            await _marvelDbContext.SaveChangesAsync();
+
             return true;
         }
 
@@ -122,7 +127,7 @@ namespace SixDegreesOfMarvel.Tasks.Tasks
             }
 
             await _marvelDbContext.SaveChangesAsync();
-            
+
             return group.CharacterGroups
                 .Select(x => x.Character)
                 .ToList();
@@ -143,7 +148,7 @@ namespace SixDegreesOfMarvel.Tasks.Tasks
                 };
                 _marvelDbContext.Characters.Add(character);
             }
-            
+
             // if we haven't explored this character...
             if (!character.Explored)
             {
@@ -164,7 +169,7 @@ namespace SixDegreesOfMarvel.Tasks.Tasks
                         };
                         _marvelDbContext.Groups.Add(group);
                     }
-                    
+
                     var characterGroup = new CharacterGroup()
                     {
                         Character = character,
@@ -177,7 +182,7 @@ namespace SixDegreesOfMarvel.Tasks.Tasks
 
                 character.Explored = true;
             }
-            
+
             await _marvelDbContext.SaveChangesAsync();
 
             return character.CharacterGroups
@@ -207,7 +212,7 @@ namespace SixDegreesOfMarvel.Tasks.Tasks
                 character.FlavorText = dto.FlavorText;
                 character.PrimaryImage = dto.PrimaryImage;
             }
-            
+
             await _marvelDbContext.SaveChangesAsync();
 
             return character;
@@ -241,5 +246,140 @@ namespace SixDegreesOfMarvel.Tasks.Tasks
 
             return group;
         }
+
+        //public void BreadthFirstSearch(Character root, Character target)
+        //{
+        //    var s = new List<Character>();
+        //    var q = new Queue<Character>();
+
+        //    s.Add(root);
+        //    q.Enqueue(root);
+
+        //    while (q.Any())
+        //    {
+        //        var current = q.Dequeue();
+
+        //        if (current.Name.Equals(target.Name, StringComparison.InvariantCultureIgnoreCase))
+        //        {
+        //            return;
+        //        }
+
+        //        var adjacent = current.CharacterGroups
+        //            // get all characters in all groups this character is in
+        //            .SelectMany(x => x.Group.CharacterGroups.Select(y => y.Character))
+        //            // except this character itself
+        //            .Except(new [] { current });
+
+        //        foreach (var node in adjacent)
+        //        {
+        //            if (s.All(seenNode => seenNode.CharacterId != node.CharacterId))
+        //            {
+        //                s.Add(node);
+        //                q.Enqueue(node);
+        //            }
+        //        }
+        //    }
+        //}
+
+        public List<Tuple<Character, Group>> BreadthFirstSearch(Character root, Character target)
+        {
+            // Key = From node, Value = To node, and how we got there.
+            var connections = new Dictionary<Character, Tuple<Character, Group>>();
+
+            var s = new List<Character>();
+            var q = new Queue<Character>();
+
+            s.Add(root);
+            q.Enqueue(root);
+
+            while (q.Any())
+            {
+                var current = q.Dequeue();
+
+                if (current.Name.Equals(target.Name, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    break;
+                }
+                
+                // on the character's connections
+                var adjacent = current.CharacterGroups
+                    // get the groups the character is directly involved in
+                    .Select(directConnection => directConnection.Group)
+                    // get all connections, i.e. tuples of (each character in each of those groups) and (the group with which they relate to the character)
+                    .SelectMany(group => group.CharacterGroups)
+                    // except for any connection which leads directly back to the root character.
+                    .Where(connection => connection.Character.CharacterId != current.CharacterId);
+
+                foreach (var node in adjacent)
+                {
+                    if (s.Any(seenNode => seenNode.CharacterId == node.Character.CharacterId))
+                    {
+                        continue;
+                    }
+
+                    s.Add(node.Character);
+                    q.Enqueue(node.Character);
+
+                    connections[node.Character] = new Tuple<Character, Group>(current, node.Group);
+                }
+            }
+
+            var path = new List<Tuple<Character, Group>>();
+
+            var lookAt = target;
+            while (!lookAt.Equals(root))
+            {
+                if (!connections.ContainsKey(lookAt))
+                {
+                    throw new NullReferenceException($"Could not find a connection from {lookAt.Name}.");
+                }
+
+                var c = connections[lookAt];
+                path.Add(new Tuple<Character, Group>(lookAt, c.Item2));
+                lookAt = c.Item1;
+            };
+
+            path.Add(new Tuple<Character, Group>(root, null));
+            path.Reverse();
+
+            return path;
+        }
+
+        //public List<ChainLink> FindLinkBetween(Character a, Character b)
+        //{
+        //    var stack = new Stack<Character>();
+        //    FindLinksBetween(a, b, stack);
+        //    return stack.Select(x => new ChainLink()
+        //    {
+        //        Name = x.Name
+        //    }).ToList();
+        //}
+
+        //public bool FindLinksBetween(Character startCharacter, Character endCharacter, Stack<Character> chain)
+        //{
+        //    var characters = _marvelDbContext.Characters;
+
+        //    var relatedCharacters = startCharacter.CharacterGroups.Select(x => x.Character);
+        //    foreach (var character in relatedCharacters)
+        //    {
+        //        if (character.Name.Equals(endCharacter.Name, StringComparison.InvariantCultureIgnoreCase))
+        //        {
+        //            return true;
+        //        }
+
+        //        // TODO: check chain
+
+        //        chain.Push(character);
+
+        //        // if the sub-call returns true, we are true too, and no need to pop off the chain
+        //        if (FindLinksBetween(character, endCharacter, chain))
+        //        {
+        //            return true;
+        //        }
+
+        //        chain.Pop();
+        //    }
+
+        //}
     }
 }

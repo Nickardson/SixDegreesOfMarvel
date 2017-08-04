@@ -318,6 +318,7 @@
     </Compile>
     <Compile Include="Models\CharacterGroupsResponse.cs" />
     <Compile Include="Models\CharacterModel.cs" />
+    <Compile Include="Models\ConnectionModel.cs" />
     <Compile Include="Models\GroupCharactersResponse.cs" />
     <Compile Include="Models\GroupModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

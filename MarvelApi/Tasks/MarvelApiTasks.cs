@@ -32,7 +32,7 @@ namespace MarvelApi.Tasks
 
         public string NormalizePageName(string pageName)
         {
-            return pageName.Replace('_', ' ');
+            return Uri.UnescapeDataString(pageName.Replace('_', ' '));
         }
 
         /// <summary>

@@ -16,10 +16,23 @@ function getCharactersInGroup(groupName, callback, failed) {
     });
 }
 
-//getCharactersInGroup('Frightful Four',
-//    function(data) {
-//        console.log(data);
-//    });
+function getCharacters(callback, failed) {
+    $.ajax({
+        url: '/api/marvel/character',
+        method: 'GET',
+        success: callback,
+        error: failed
+    });
+}
+
+function getGroups(callback, failed) {
+    $.ajax({
+        url: '/api/marvel/group',
+        method: 'GET',
+        success: callback,
+        error: failed
+    });
+}
 
 function pushGroupsRow(groups) {
     var row = $('<div class="row groupRow"></div>');
@@ -36,12 +49,6 @@ function pushGroupsRow(groups) {
     $(row).appendTo('#chainContainer');
 }
 
-//getGroupsOfCharacter('Captain America (Steve Rogers)',
-//    function (data) {
-//        console.log(data);
-//        pushGroupsRow(data.Groups);
-//    });
-
 var ChainTypeCharacter = 'Character';
 var ChainTypeGroup = 'Group';
 
@@ -56,9 +63,66 @@ var app = new Vue({
     el: '#app',
     data: {
         loadingChain: false,
-        chains: []
+        chains: [],
+
+        characters: [],
+
+        connections: [],
+
+        fromCharacter: '',
+        toCharacter: ''
+    },
+    computed: {
+        exploredCharacters: function() {
+            return this.characters.filter(function(a) {
+                //return a.explored;
+                return true;
+            }).sort(function(a, b) {
+                if (a.name < b.name) {
+                    return -1;
+                } else if (a.name > b.name) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+        }
     },
     methods: {
+        scrollToTop: function() {
+            jQuery('html,body').animate({ scrollTop: 0 }, 500);
+        },
+
+        updateCharacterList: function () {
+            var self = this;
+            getCharacters(function (data) {
+                self.characters = [];
+
+                data.forEach(function(character) {
+                    self.characters.push({
+                        id: character.Id,
+                        name: character.Name,
+                        explored: character.Explored,
+                        flavorText: character.FlavorText,
+                        primaryImage: character.PrimaryImage
+                    });
+                });
+            });
+        },
+
+        determineConnections: function(from, to) {
+            $.ajax({
+                url: '/api/marvel/connections?fromCharacter=' + from + '&toCharacter=' + to,
+                method: 'GET',
+                success: function(data) {
+                    app.connections = data;
+                },
+                error: function() {
+                    app.connections = [];
+                }
+            });
+        },
+
         /**
          * 
          * @param {} type 'Character' or 'Group'
@@ -74,15 +138,16 @@ var app = new Vue({
                 self.loadingChain = true;
 
                 getGroupsOfCharacter(item.name,
-                    function(data) {
+                    function (data) {
+                        item.explored = true;
+
                         // remove all chains above this one
                         self.chains = self.chains.splice(self.chains.indexOf(chain));
 
                         var chainItems = data.Groups.map(function (group) {
                             return {
-                                name: group,
-                                // TODO: group should be fleshed out with explored info, etc
-                                explored: false
+                                name: group.Name,
+                                explored: group.Explored
                             }
                         });
 
@@ -90,6 +155,8 @@ var app = new Vue({
                         self.chains.unshift(groupChain);
 
                         self.loadingChain = false;
+
+                        self.scrollToTop();
                     },
                     function(xhr, textStatus) {
                         self.loadingChain = false;
@@ -99,14 +166,15 @@ var app = new Vue({
 
                 getCharactersInGroup(item.name,
                     function (data) {
+                        item.explored = true;
+
                         // remove all chains above this one
                         self.chains = self.chains.splice(self.chains.indexOf(chain));
 
                         var chainItems = data.Characters.map(function (character) {
                             return {
-                                name: character,
-                                // TODO: group should be fleshed out with explored info, etc
-                                explored: false
+                                name: character.Name,
+                                explored: character.Explored
                             }
                         });
 
@@ -114,6 +182,8 @@ var app = new Vue({
                         self.chains.unshift(groupChain);
 
                         self.loadingChain = false;
+
+                        self.scrollToTop();
                     },
                     function (xhr, textStatus) {
                         self.loadingChain = false;
@@ -124,16 +194,9 @@ var app = new Vue({
 });
 
 app.chains.push(new Chain(ChainTypeGroup, [
-    { name: 'Force Works' }
-], 'Force Works'));
-app.chains.push(new Chain(ChainTypeCharacter, [
-    { name: 'Captain America (Steve Rogers)', explored: true },
-    { name: 'Iron Man (Anthony Stark)' }
-], 'Iron Man (Anthony Stark)'));
-app.chains.push(new Chain(ChainTypeGroup, [
-    { name: 'Avengers' }
+    { name: 'Avengers', explored: true }
 ], 'Avengers'));
-app.chains.push(new Chain(ChainTypeCharacter, [
-    { name: 'Iron Man (Anthony Stark)' },
-    { name: 'Captain America (Steve Rogers)', explored: true },
-], 'Iron Man (Anthony Stark)'));
+
+app.updateCharacterList();
+
+//app.exploreChain(app.chains[0], app.chains[0].items[0]);

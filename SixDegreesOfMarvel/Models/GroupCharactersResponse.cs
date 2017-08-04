@@ -8,12 +8,12 @@ namespace SixDegreesOfMarvel.Models
 {
     public class GroupCharactersResponse
     {
-        public IEnumerable<string> Characters { get; set; }
+        public IEnumerable<CharacterModel> Characters { get; set; }
 
         public GroupCharactersResponse(IEnumerable<Character> characters)
         {
             Characters = characters
-                .Select(character => character.Name);
+                .Select(character => new CharacterModel(character));
         }
     }
 }

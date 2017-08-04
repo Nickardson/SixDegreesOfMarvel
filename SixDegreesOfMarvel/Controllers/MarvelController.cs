@@ -33,11 +33,32 @@ namespace SixDegreesOfMarvel.Controllers
         /// </summary>
         [HttpGet]
         [Route("clearcache")]
-        public async Task<JsonResult<bool>> ClearCache()
+        public async Task<bool> ClearCache()
         {
             await DependencyTasks.ClearCache();
+            
+            return true;
+        }
 
-            return Json(true);
+        [HttpGet]
+        [Route("connections")]
+        public async Task<IEnumerable<ConnectionModel>> Connections([FromUri] string fromCharacter, [FromUri] string toCharacter)
+        {
+            var from = await DependencyTasks.GetCharacterByName(fromCharacter);
+            var to = await DependencyTasks.GetCharacterByName(toCharacter);
+
+            if (from == null)
+            {
+                throw new NullReferenceException($"Could not find the character '{fromCharacter}'.");
+            }
+            if (to == null)
+            {
+                throw new NullReferenceException($"Could not find the character '{toCharacter}'.");
+            }
+
+            var path = DependencyTasks.BreadthFirstSearch(from, to);
+
+            return path.Select(x => new ConnectionModel(x.Item1, x.Item2));
         }
 
         /// <summary>
@@ -45,11 +66,11 @@ namespace SixDegreesOfMarvel.Controllers
         /// </summary>
         [HttpGet]
         [Route("character")]
-        public async Task<JsonResult<IEnumerable<CharacterModel>>> GetAllCharacters()
+        public async Task<IEnumerable<CharacterModel>> GetAllCharacters()
         {
             var list = await DependencyTasks.GetAllCharacters();
 
-            return Json(list.Select(x => new CharacterModel(x)));
+            return list.Select(x => new CharacterModel(x));
         }
 
         /// <summary>
@@ -57,11 +78,11 @@ namespace SixDegreesOfMarvel.Controllers
         /// </summary>
         [HttpGet]
         [Route("group")]
-        public async Task<JsonResult<IEnumerable<GroupModel>>> GetAllGroups()
+        public async Task<IEnumerable<GroupModel>> GetAllGroups()
         {
             var list = await DependencyTasks.GetAllGroups();
 
-            return Json(list.Select(x => new GroupModel(x)));
+            return list.Select(x => new GroupModel(x));
         }
 
         /// <summary>
@@ -71,10 +92,10 @@ namespace SixDegreesOfMarvel.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("character")]
-        public async Task<JsonResult<Character>> GetCharacterByName([FromUri] string characterName)
+        public async Task<Character> GetCharacterByName([FromUri] string characterName)
         {
             var character = await DependencyTasks.GetCharacterByName(characterName);
-            return Json(character);
+            return character;
         }
 
         /// <summary>
@@ -84,18 +105,18 @@ namespace SixDegreesOfMarvel.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("character/groups")]
-        public async Task<JsonResult<CharacterGroupsResponse>> GetCharacterGroups([FromUri] string characterName)
+        public async Task<CharacterGroupsResponse> GetCharacterGroups([FromUri] string characterName)
         {
             var groups = await DependencyTasks.GetGroupAffiliations(characterName);
-            return Json(new CharacterGroupsResponse(groups));
+            return new CharacterGroupsResponse(groups);
         }
 
         [HttpGet]
         [Route("group/characters")]
-        public async Task<JsonResult<GroupCharactersResponse>> GetGroupCharacters([FromUri] string groupName)
+        public async Task<GroupCharactersResponse> GetGroupCharacters([FromUri] string groupName)
         {
             var characters = await DependencyTasks.GetCharacterAffiliations(groupName);
-            return Json(new GroupCharactersResponse(characters));
+            return new GroupCharactersResponse(characters);
         }
         
         //[HttpPost]
