@@ -29,7 +29,7 @@ namespace SixDegreesOfMarvel.Controllers
         }
 
         /// <summary>
-        /// Gets a list of all characters that have been discovered.
+        /// Clears out all previously explored characters and groups.
         /// </summary>
         [HttpGet]
         [Route("clearcache")]
@@ -40,6 +40,12 @@ namespace SixDegreesOfMarvel.Controllers
             return true;
         }
 
+        /// <summary>
+        /// Gets connections between two chacters.
+        /// </summary>
+        /// <param name="fromCharacter">The name of the character to start the search at.</param>
+        /// <param name="toCharacter">The name of the character to examine connections to find.</param>
+        /// <returns>A series of connections, in order of the chain.</returns>
         [HttpGet]
         [Route("connections")]
         public async Task<IEnumerable<ConnectionModel>> Connections([FromUri] string fromCharacter, [FromUri] string toCharacter)
@@ -89,7 +95,7 @@ namespace SixDegreesOfMarvel.Controllers
         /// Gets a character by name.
         /// </summary>
         /// <param name="characterName">The page name of the character.</param>
-        /// <returns></returns>
+        /// <returns>The character model, if a character was found.</returns>
         [HttpGet]
         [Route("character")]
         public async Task<Character> GetCharacterByName([FromUri] string characterName)
@@ -102,7 +108,7 @@ namespace SixDegreesOfMarvel.Controllers
         /// Gets all groups which the given character belongs to.
         /// </summary>
         /// <param name="characterName">The page name of the character.</param>
-        /// <returns></returns>
+        /// <returns>The groups the character belongs to.</returns>
         [HttpGet]
         [Route("character/groups")]
         public async Task<CharacterGroupsResponse> GetCharacterGroups([FromUri] string characterName)
@@ -111,6 +117,11 @@ namespace SixDegreesOfMarvel.Controllers
             return new CharacterGroupsResponse(groups);
         }
 
+        /// <summary>
+        /// Gets all characters which the belong to the given group.
+        /// </summary>
+        /// <param name="groupName">The page name of the group.</param>
+        /// <returns>The characters found inside the group.</returns>
         [HttpGet]
         [Route("group/characters")]
         public async Task<GroupCharactersResponse> GetGroupCharacters([FromUri] string groupName)
@@ -118,28 +129,5 @@ namespace SixDegreesOfMarvel.Controllers
             var characters = await DependencyTasks.GetCharacterAffiliations(groupName);
             return new GroupCharactersResponse(characters);
         }
-        
-        //[HttpPost]
-        //[Route("stress")]
-        //public async Task<IHttpActionResult> StressPost([FromUri] string name, [FromBody] CharacterDTO dto)
-        //{
-        //    var character = await DependencyTasks.AddOrUpdateCharacter(name, dto);
-
-        //    return Json(character);
-        //}
-
-        //[Route("page")]
-        //public async Task<IHttpActionResult> GetPage([FromUri] string pageName)
-        //{
-        //    var response = await MarvelApi.GetPageContents(pageName);
-        //    return Json(response);
-        //}
-
-        //[Route("category")]
-        //public async Task<IHttpActionResult> GetCategory([FromUri] string categoryName)
-        //{
-        //    var response = await MarvelApi.GetCategoryMembers($"Category:{categoryName}");
-        //    return Json(response);
-        //}
     }
 }
