@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using SixDegreesOfMarvel.Model.Models;
+﻿using SixDegreesOfMarvel.Model.Models;
 
 namespace SixDegreesOfMarvel.Models
 {

@@ -1,6 +1,5 @@
 ﻿using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SixDegreesOfMarvel;
 using SixDegreesOfMarvel.Controllers;
 
 namespace SixDegreesOfMarvel.Tests.Controllers

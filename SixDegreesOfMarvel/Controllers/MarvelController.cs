@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Results;
-using MarvelApi.Tasks;
-using MarvelApi.Tasks.Models;
-using MarvelApi.Tasks.Models.ParsePage;
 using SixDegreesOfMarvel.Model.Models;
 using SixDegreesOfMarvel.Models;
-using SixDegreesOfMarvel.Tasks.DTO;
 using SixDegreesOfMarvel.Tasks.Tasks;
 
 namespace SixDegreesOfMarvel.Controllers
@@ -19,12 +12,10 @@ namespace SixDegreesOfMarvel.Controllers
     [RoutePrefix("api/marvel")]
     public class MarvelController : ApiController
     {
-        private MarvelApiTasks MarvelApi { get; }
         private MarvelDependencyTasks DependencyTasks { get; }
 
-        public MarvelController(MarvelApiTasks marvelApi, MarvelDependencyTasks dependencyTasks)
+        public MarvelController(MarvelDependencyTasks dependencyTasks)
         {
-            MarvelApi = marvelApi;
             DependencyTasks = dependencyTasks;
         }
 

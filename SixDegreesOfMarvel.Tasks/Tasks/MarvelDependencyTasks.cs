@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using MarvelApi.Tasks;
 using SixDegreesOfMarvel.Model.Models;
@@ -57,7 +56,7 @@ namespace SixDegreesOfMarvel.Tasks.Tasks
             characterName = _marvelApiTasks.NormalizePageName(characterName);
 
             // TODO: test toupper
-            return await _marvelDbContext.Characters.SingleOrDefaultAsync(
+            return await _marvelDbContext.Characters.FirstOrDefaultAsync(
                 character => character.Name == characterName);
         }
 
@@ -71,7 +70,7 @@ namespace SixDegreesOfMarvel.Tasks.Tasks
             groupName = _marvelApiTasks.NormalizePageName(groupName);
 
             // TODO: test toupper
-            return await _marvelDbContext.Groups.SingleOrDefaultAsync(
+            return await _marvelDbContext.Groups.FirstOrDefaultAsync(
                 group => group.Name == groupName);
         }
 
@@ -337,7 +336,7 @@ namespace SixDegreesOfMarvel.Tasks.Tasks
                 var c = connections[lookAt];
                 path.Add(new Tuple<Character, Group>(lookAt, c.Item2));
                 lookAt = c.Item1;
-            };
+            }
 
             path.Add(new Tuple<Character, Group>(root, null));
             path.Reverse();

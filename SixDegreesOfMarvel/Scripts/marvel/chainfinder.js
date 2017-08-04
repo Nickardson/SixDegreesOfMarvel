@@ -1,4 +1,14 @@
-﻿function getGroupsOfCharacter(characterName, callback, failed) {
+﻿function sortByName(a, b) {
+    if (a.name < b.name) {
+        return -1;
+    } else if (a.name > b.name) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+function getGroupsOfCharacter(characterName, callback, failed) {
     $.ajax({
         url: '/api/marvel/character/groups/?characterName=' + characterName,
         method: 'GET',
@@ -74,18 +84,7 @@ var app = new Vue({
     },
     computed: {
         exploredCharacters: function() {
-            return this.characters.filter(function(a) {
-                //return a.explored;
-                return true;
-            }).sort(function(a, b) {
-                if (a.name < b.name) {
-                    return -1;
-                } else if (a.name > b.name) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            });
+            return this.characters.sort(sortByName);
         }
     },
     methods: {
@@ -149,7 +148,7 @@ var app = new Vue({
                                 name: group.Name,
                                 explored: group.Explored
                             }
-                        });
+                        }).sort(sortByName);
 
                         var groupChain = new Chain(ChainTypeGroup, chainItems);
                         self.chains.unshift(groupChain);
@@ -158,7 +157,7 @@ var app = new Vue({
 
                         self.scrollToTop();
                     },
-                    function(xhr, textStatus) {
+                    function() {
                         self.loadingChain = false;
                     });
             } else if (chain.type === ChainTypeGroup) {
@@ -176,7 +175,7 @@ var app = new Vue({
                                 name: character.Name,
                                 explored: character.Explored
                             }
-                        });
+                        }).sort(sortByName);
 
                         var groupChain = new Chain(ChainTypeCharacter, chainItems);
                         self.chains.unshift(groupChain);
@@ -185,7 +184,7 @@ var app = new Vue({
 
                         self.scrollToTop();
                     },
-                    function (xhr, textStatus) {
+                    function () {
                         self.loadingChain = false;
                     });
             }

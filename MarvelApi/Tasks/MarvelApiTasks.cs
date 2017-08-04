@@ -3,13 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.XPath;
 using HtmlAgilityPack;
-using MarvelApi.Tasks.Models;
 using MarvelApi.Tasks.Models.CategoryMembers;
 using MarvelApi.Tasks.Models.ParsePage;
 using Newtonsoft.Json;
@@ -30,6 +25,11 @@ namespace MarvelApi.Tasks
             _client.DefaultRequestHeaders.Accept.Clear();
         }
 
+        /// <summary>
+        /// Converts the given string (obtained from a URL) to a displayable/storable format.
+        /// </summary>
+        /// <param name="pageName"></param>
+        /// <returns></returns>
         public string NormalizePageName(string pageName)
         {
             return Uri.UnescapeDataString(pageName.Replace('_', ' '));
@@ -39,7 +39,7 @@ namespace MarvelApi.Tasks
         /// Pulls the group affilations down from the marvel site for the given character.
         /// </summary>
         /// <param name="characterPageName">Name of the character's page. If it is not a character page, the behavior is undefined.</param>
-        /// <returns></returns>
+        /// <returns>List of group page names</returns>
         public async Task<IEnumerable<string>> GetGroupAffiliations(string characterPageName)
         {
             characterPageName = NormalizePageName(characterPageName);
@@ -54,6 +54,11 @@ namespace MarvelApi.Tasks
             return affiliationPages;
         }
 
+        /// <summary>
+        /// Pulls the character affilations down from the marvel site for the given group.
+        /// </summary>
+        /// <param name="groupPageName">Name of the groups's page. If it is not a group page, the behavior is undefined.</param>
+        /// <returns>List of character page names</returns>
         public async Task<IEnumerable<string>> GetCharacterAffiliations(string groupPageName)
         {
             groupPageName = NormalizePageName(groupPageName);
@@ -130,11 +135,12 @@ namespace MarvelApi.Tasks
         }
 
         /// <summary>
-        /// 
+        /// Gets the members of a category, in a paginated form.
+        /// Not currently used anywhere.
         /// </summary>
         /// <param name="categoryName">i.e. Category:People</param>
-        /// <param name="continuePage"></param>
-        /// <param name="limit"></param>
+        /// <param name="continuePage">Page to continue from, or null if this is the first query</param>
+        /// <param name="limit">Maximum number of items to retrieve per page</param>
         /// <returns></returns>
         public async Task<QueryCategoryMembersModel> GetCategoryMembers(string categoryName, string continuePage = null, int limit = 100)
         {
