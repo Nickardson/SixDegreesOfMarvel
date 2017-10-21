@@ -29,7 +29,7 @@ namespace SixDegreesOfMarvel.Tasks.Tasks
             await _marvelDbContext.SaveChangesAsync();
 
             // re-seed the values
-            new MarvelDbInitializer().CreateMarvelChacacters(_marvelDbContext);
+            new MarvelDbInitializer().CreateMarvelCharacters(_marvelDbContext);
 
             await _marvelDbContext.SaveChangesAsync();
 

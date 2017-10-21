@@ -7,14 +7,14 @@ namespace SixDegreesOfMarvel.Repository
     {
         protected override void Seed(MarvelDbContext context)
         {
-            CreateMarvelChacacters(context);
+            CreateMarvelCharacters(context);
         }
 
-        public void CreateMarvelChacacters(MarvelDbContext context)
+        public void CreateMarvelCharacters(MarvelDbContext context)
         {
-            // The SHIELD page on the marvel wiki doesn't seem to work.
-            // Although it's their fault, it reflects poorly on this API's abilities.
-            // So we pre-add some people who wikipedia reports to be in SHIELD so it can be used as part of a chain.
+            // The SHIELD page on the marvel wiki has problems sometimes.
+            // So this doesn't reflect poorly on the API,
+            // We pre-add some SHIELD members so it works out of the gate.
             var group = AddGroupAsExplored(context, "S.H.I.E.L.D.");
             AddCharacterInGroup(context, "Iron Man (Anthony Stark)", group);
             AddCharacterInGroup(context, "Hill, Maria", group);
